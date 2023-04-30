@@ -7,6 +7,18 @@ Useful learning resources:
 * [abseil.io](https://abseil.io/) Good for looking up APIs and getting tips on how to use C++
 * [code.visualstudio.com](https://code.visualstudio.com/) Documentation on how to use the course editor
 
+C++ is not C!
+
+Valid C code is often valid C++ code, but good C is very different from good C++.
+
+## How C++ is compiled
+C++ is a compiled language, which means that its code must be translated into machine code before it can be executed.
+
+1. writing code
+2. compiling code: once having written code, we need to compile it. Compilation is the process of translating human-readable code into machine code that the computer can understand.
+3. linking code: when we compile a C++ program, it may use external libraries and other resources. These externeal resources need to be linked to our program before it can be executed. The linker is responsible for this task.
+4. executing code: the OS loads our program into memory and starts executing it.
+
 ## Basic Types
 
 ``` cpp
@@ -34,6 +46,27 @@ CHECK(is_cxx != is_danish)
 
 `auto` when used with variables deduces the type of the variable based on its initialised value
 
+### User-Defined Types (UDT)
+users can create their own types through combining fundamental types and structs, classes, and unions.
+
+### Enumerations & Enum Classes
+C++ supports enumerations from C.
+Enumerations are named symbolic constants implemented as some integral type.
+
+``` cpp
+enum color { RED = 0, GREEN, BLUE, };
+enum class rgb : unsigned char {
+    R = 0,
+    G,
+    B,
+}
+assert(color::RED == rgb::R); // true
+
+// ERROR: enum class members do not support
+// bitwise-OR by default (unlike ints)
+rgb::R | 0x2;
+```
+
 ### Const
 
 The keyword `const` specifies that a value cannot be modified.  
@@ -52,6 +85,12 @@ Why `const`?
 * Immutable objects are easier to reason about
 * The compiler **may** be able to make certain optimisations
 * Immutable objects are **much** easier to use in multithreading situations
+
+### Top-level & bottom-level const
+- Top-level const:
+    - the pointer is constant and cannot point to anything else
+- Bottom-level const:
+    - the pointee is constant and cannot be modified through this pointer
 
 ### Integer Expressions
 
@@ -467,7 +506,7 @@ int main() {
 
 ## For Statements
 
-range-for-statements:
+range-for-statements (encouraged):
 
 ``` cpp
 auto all_computer_scientists(std::vector<std::string> const& names) -> bool {
@@ -718,3 +757,36 @@ There are 4 types of program errors that we will discuss:
     auto const empty = std::string("");
     CHECK(empty[0] == 'C'); // Logic error: bad character access
     ```
+    
+## Namespaces
+- namespaces are a way to prevent name collisons between different parts of code
+- names inside a namespace are accessed with the scope operator ::
+
+``` cpp
+namespace nonstd {
+    char get_char();
+    int course = 6771;
+}
+
+// access via scope operator
+std::cout << nonstd::course << std::end;
+auto c = nonstd::get_char();
+```
+
+## Templates
+- templates are a way to write generic code in C++
+
+``` cpp
+#include <vector>
+#include <map>
+// A vector of “int”. The type is specified in
+// the <> angle brackets
+std::vector<int> ints = {1, 2, 3};
+
+// a mapping of int -> bool.
+// the Key type is int
+// the Value type is bool
+std::map<int, bool> m = {{0, false}, {1,
+true}};
+
+```
