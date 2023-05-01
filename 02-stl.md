@@ -59,6 +59,12 @@ TEST_CASE("empty vectors") { // Opens up a context for testing
 }
 ```
 
+`CHECK` and `assert()` are both macros, but a CHECK will evaluate an expression and report it if it's false whereas assert will crash the program.
+
+`REQUIRE` evaluetes an expression and if false will terminate the currently executing test and move onto the next one. It is entirely unrelated to `assert`.
+
+`SECTION` blocks are ways to divide testing logic in `TEST_CASE`s. Any state changes in a `SECTION` are not related in `SECTION`s at the same level.
+
 ## Containers
 
 Containers are abstractions of common data structures. They are objects that you can "put"other objects "into".
