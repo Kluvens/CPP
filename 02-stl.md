@@ -5,6 +5,8 @@ A **library** is a collection of implementations of behaviour, written in terms 
 Why do we want to use libraries?  
 ***"Every line of code you don't write is bug free"***
 
+***"Being an effective programmer often consists of the effective use of libraries. In some ways, this becomes more important than being a genius at writing code from scratch. Don't reinvent the wheel."***
+
 Code in in a popular library is ofter:
 
 * well-documented
@@ -67,7 +69,7 @@ Container operations vary in time and space complexity. Their performance has a 
 
 The complexity of common container operations:
 
-![container operations](../imgs/02-5_container-operations.png)
+![image](https://user-images.githubusercontent.com/95273765/235384549-2b04738f-3a9a-4a91-872f-c5baf38c0f7e.png)
 
 ### Sequence Containers
 
@@ -352,13 +354,76 @@ deck.pop();
 CHECK(more_cards != deck);
 ```
 
+### Container-like Types
+
+| Container              | Arrangement                 |
+| ---                    | ---                         |
+| `std::pair`            | Heterogenous list of values |
+| `std::tuple`           | Heterogenous list of values |
+| `std::function`        | Holds 0 or 1 callables      |
+| `std::optional`        | Contains 0 or 1 values of a type      |
+| `std::variant`         | A type-safe tagged union    |
+| `std::any`             | A type taht can hold a value of any type |
+
+### std::tuple
+``` cpp
+#include <tuple> // #include<functional>
+
+std::tuple<float, char> t1 = {3.14f, ‘c’};
+auto t2 = std::make_tuple(3.14f, ‘c’); // equivalent way to make a tuple
+
+std::cout << std::get<0>(t1) << "\n"; // prints 3.14
+std::cout << std::get<char>(t2) << "\n"; // prints ’c’;
+```
+
+### std::function
+``` cpp
+#include <functional>
+using namespace std::placeholders; // for _1 in the std::bind example
+
+int add(int n1, int n2) { return n1 + n2; };
+std::function<int(int, int)> adder = add; // now adder is the same add()
+
+std::function<int(int)> plus_one = std::bind(adder, 1, _1);
+std::cout << plus_one(6770) << std::endl; // prints 6771
+```
+
+### std::optional
+``` cpp
+#include <optional>
+
+std::optional<double> divide (double top, double bot) {
+    // this function has “no result” if the denominator is 0!
+    return bot == 0 ? std::optional<double>{} : std::optional<double>{top / bot};
+}
+
+auto quotient = divide(5, 0);
+std::cout << std::boolalpha << quotient.has_value() << std::endl; // prints false
+```
+
+### Requirements of std::vector
+- the type must be copyable or movable
+- the type must have a public destructor
+- the type must be assignable
+
+### Requirements of std::set
+- the type must be copyable
+- the type must have a strict weak ordering. this means that you must define the '<' operator
+- the type must be comparable for equality
+- the type must have a public constructor
+
+### Requirements of std::unordered_set
+- the type must be hashable
+- the type must be comparable for equality
+- the type must be default constructable
+
 ## Iterators
 
 > A range is an ordered sequence of elements with a designated start and rule for finishing
 
 **Iterators** are a common theme between containers, algorithms and ranges. They provide and intermediate representation for which containers an be used by algorithms.
 
-![iterators](../imgs/02-10_iterators.jpg)
+![image](https://user-images.githubusercontent.com/95273765/235386916-bcebab6d-6106-42ff-8bbd-fb41f98b342c.png)
 
 Algorithms go through containers using iterators and return an iterator as a result.
 
@@ -375,6 +440,12 @@ Comparing iterators with other traversal methods:
 | Comparison     | `i < ranges::distance(v)`   | `i != nullptr` | `i != s`      |
 
 Note: `++i` is preferred over `i++`
+
+### Constant iterator vs. const_iterator
+- pointers can be top-level and bottome-level const
+- a constant itrator is a top-level const iterator. the iterator variable cannot be reassigned
+- a const_iterator is a bottom level const iterator. the element pointed to by the iterator cannot be modified
+- just like a pointer, an iterator can both be a constant iterator and a const_iterator simultaneously
 
 ### Ranges
 
